@@ -5,6 +5,7 @@
 //#include "sys/socket.h" // depedency for
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 struct argument {
     const char* name;
@@ -16,9 +17,10 @@ struct optional_argument {
 }; 
 
 struct snc {
-    unsigned port; // required (must be last argument)
+    int port; // required (must be last argument)
     int udp_flag;
     int listen_flag;
+    int source_ip_address_flag;
     //const boolean udp_flag;
     //const boolean listen_flag;
     char* source_ip_address;
@@ -27,19 +29,23 @@ struct snc {
     //const snc();//?
 };
 
-int main(int argc, char**argv) {
+int main(int argc, char* argv[]) {
     int opt;
-    char listen_arg;
-    while ( (opt = getopt(argc, argv, "l:")) != -1 ) {
+    struct snc command;
+    while ( (opt = getopt(argc-1, argv, "lus:")) != -1 ) {
         switch (opt) {
             case 'l':
-                listen_arg = opt;
-                struct snc command;
-                command.listen_flag = 'l';
-                listen_flag = 'l';
+                command.listen_flag = 1;
+                command.source_ip_address = optarg;
                 break;
             case 'u':
-
+                command.udp_flag = 1;
+                break;
+            case 's':
+                command.source_ip_address_flag = 1;
+                command.source_ip_address = optarg;
+                // check the syntax
+                break;
             default:
                 break;
             // Expect A
@@ -48,6 +54,14 @@ int main(int argc, char**argv) {
             //default: // parse port
         }
     }
+
+    // retrieve port number
+
+    // check error
+    command.port = atoi(argv[argc - 1]);
+
+//    for (int index = 0; index < argc; index++)
+//        printf("argv: %s\n", argv[index]);
 
     //int hostname;
     //int port;
