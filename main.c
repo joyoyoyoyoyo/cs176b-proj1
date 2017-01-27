@@ -31,15 +31,17 @@ struct snc {
 
 int main(int argc, char* argv[]) {
     int opt;
+    int num_of_params_specified;
     struct snc command;
     while ( (opt = getopt(argc-1, argv, "lus:")) != -1 ) {
         switch (opt) {
             case 'l':
                 command.listen_flag = 1;
-                command.source_ip_address = optarg;
+                ++num_of_params_specified;
                 break;
             case 'u':
                 command.udp_flag = 1;
+                ++num_of_params_specified
                 break;
             case 's':
                 command.source_ip_address_flag = 1;
