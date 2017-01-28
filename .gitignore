@@ -1,3 +1,6 @@
 
 # IDE details
 .idea/*
+.idea
+.idea/*.xml
+
