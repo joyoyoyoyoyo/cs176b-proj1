@@ -5,68 +5,54 @@
 //#include "sys/socket.h" // depedency for
 #include <unistd.h>
 #include <stdlib.h>
-#include <stdio.h>
-
-struct argument {
-    const char* name;
-};
-
-// class of arguments
-struct optional_argument {
-    const char* hostname;
-}; 
+#include <error.h>
+#include "InvalidOrMissingOptionsError.h"
+#include "InternalError.h"
 
 struct snc {
-    int port; // required (must be last argument)
-    int udp_flag;
-    int listen_flag;
-    int source_ip_address_flag;
-    //const boolean udp_flag;
-    //const boolean listen_flag;
-    char* source_ip_address;
-    char* hostname;
-    //const execute(); //?
-    //const snc();//?
+  int port; // required (must be last argument)
+  int udp_flag;
+  int listen_flag;
+  int source_ip_address_flag;
+  char* source_ip_address;
+  char* hostname;
+  //const execute(); //?
+  //const snc();//?
 };
 
 int main(int argc, char* argv[]) {
-    int opt;
-    int num_of_params_specified;
-    struct snc command;
-    while ( (opt = getopt(argc-1, argv, "lus:")) != -1 ) {
-        switch (opt) {
-            case 'l':
-                command.listen_flag = 1;
-                ++num_of_params_specified;
-                break;
-            case 'u':
-                command.udp_flag = 1;
-                ++num_of_params_specified
-                break;
-            case 's':
-                command.source_ip_address_flag = 1;
-                command.source_ip_address = optarg;
-                // check the syntax
-                break;
-            default:
-                break;
-            // Expect A
-            // Expect B
-            // Expect C
-            //default: // parse port
-        }
-    }
+  int opt;
+  int num_of_optparams_specified;
+  struct snc command;
 
-    // retrieve port number
+  while ( (opt = getopt(argc-1, argv, "lus:")) != -1 ) {
+    switch (opt) {
+      case 'l':
+        command.listen_flag = 1;
+        ++num_of_optparams_specified;
+        break;
+      case 'u':
+        command.udp_flag = 1;
+        ++num_of_optparams_specified;
+        break;
+      case 's':
+        command.source_ip_address_flag = 1;
+        command.source_ip_address = optarg; //must be required
+        num_of_optparams_specified += 2;
+        // check that the syntax follows x.x.x.x
+      break;
+        default:
+        break;
+    } // end switch case
+  } // end optional command parsing
 
-    // check error
-    command.port = atoi(argv[argc - 1]);
-
-//    for (int index = 0; index < argc; index++)
-//        printf("argv: %s\n", argv[index]);
-
-    //int hostname;
-    //int port;
-    //struct sockaddr_in socket;
-
-    }
+  command.port = atoi(argv[argc - 1]);
+  InvalidOrMissingOptionsError* x;
+//  if(icommand.listen_flag = 0)
+//  command.hostname =
+  //for (int index = 0; index < argc; index++)
+  //printf("argv: %s\n", argv[index]);
+  //int hostname;
+  //int port;
+  //struct sockaddr_in socket;
+}
