@@ -7,9 +7,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <arpa/inet.h>
+#include <netdb.h>
+#include <string.h>
+
+#define DEFAULT_BUFFER_SIZE 2024
 
 struct snc {
-  unsigned port; // required (must be last argument)
+  int port; // required (must be last argument)
   int udp_flag;
   int listen_flag;
   int source_ip_address_flag;
@@ -47,15 +51,35 @@ int main(int argc, char* argv[]) {
         break;
     }
   }
+  // unsigned int or int
+  //std::strtoul() or atoi().
   command.port = atoi(argv[argc - 1]);
 
   for(int index =0; index < argc; index++)
     printf("argv[%d]:\t%s\n",index, argv[index]);
-  struct sockaddr_in *client_in;
-  client_in->sin_family = AF_INET; // use IPv4
-  client_in->sin_port = htons(command.port);
-  inet_aton("63.161.169.137", client_in);
-  client_in->sin_addr.s_addr = inet_addr(command.hostname);
+
+
+  struct sockaddr_in *client_addr;
+  struct hostent *hostinfo;
+  client_addr->sin_family = AF_INET; // use IPv4
+  client_addr->sin_port = htons(command.port);
+
+//    client_addr->sin_addr.s_addr = inet_addr(command.hostname);
+
+  /**
+   * This method is to detect the host
+   */
+  hostinfo = gethostbyname(command.hostname);
+  if (hostinfo == NULL) {
+    fprintf (stderr, "Unknown host %s.\n", command.hostname);
+    exit (EXIT_FAILURE);
+  }
+  client_addr->sin_addr = *(struct in_addr *) hostinfo->h_addr;
+
+  //  inet_aton("63.161.169.137", (client_addr->sin_addr).s_addr);
+
+
+//  client_addr->sin_addr.s_addr = inet_addr(command.hostname);
   //  inet_aton("63.161.169.137", &myaddr.sin_addr.s_addr);
 
   int byte_type;
@@ -65,7 +89,28 @@ int main(int argc, char* argv[]) {
     byte_type = SOCK_STREAM;
 
   int socketfd = socket(AF_INET, byte_type, 0);
-  bind(socketfd, (struct sockaddr *)client_in, sizeof(client_in));
+  bind(socketfd, (struct sockaddr *)client_addr, sizeof(client_addr));
+
+  listen( socketfd, 1000 );
+
+
+  /***
+   * Construct buffer for server
+   */
+  char *req = "Test";
+  char buffer[DEFAULT_BUFFER_SIZE];
+  char *buffer_addr;
+  ssize_t n_bytes_to_read;
+  int buffer_free_space;
+  buffer_addr = buffer;
+  buffer_free_space = DEFAULT_BUFFER_SIZE;
+
+  int conn_fd_passthrough = accept(socketfd, ( struct sockaddr * ) &client_addr, (socklen_t *) &client_addr);
+   while ( (n_bytes_to_read = recv( conn_fd_passthrough, buffer_addr, DEFAULT_BUFFER_SIZE, 0)) > 0) {
+     buffer_addr++;
+     buffer_free_space -= n_bytes_to_read;
+   }
+  send( conn_fd_passthrough, buffer_addr, strlen(req), 0);
 //  struct snc commands = parseCommands(argc,argv);
 //  deploy(*commands,commands->port,commands->udp_flag);
 
