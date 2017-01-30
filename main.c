@@ -5,7 +5,7 @@
 //#include "sys/socket.h" // depedency for
 #include <unistd.h>
 #include <stdlib.h>
-#include "errors/Error.h"
+#include <stdio.h>
 #include "errors/InvalidOrMissingOptionsError.h"
 #include "errors/InternalError.h"
 
@@ -21,8 +21,14 @@ struct snc {
 };
 
 
+void parseCommands();
 
 int main(int argc, char* argv[]) {
+
+  parseCommands(argc,argv);
+}
+
+void parseCommands(int argc, char* argv[]) {
   int opt;
   int num_of_optparams_specified;
   struct snc command;
@@ -45,16 +51,11 @@ int main(int argc, char* argv[]) {
       break;
         default:
         break;
-    } // end switch case
-  } // end optional command parsing
-
+    }
+  }
   command.port = atoi(argv[argc - 1]);
-  InvalidOrMissingOptionsError* x;
-//  if(icommand.listen_flag = 0)
-//  command.hostname =
-  //for (int index = 0; index < argc; index++)
-  //printf("argv: %s\n", argv[index]);
-  //int hostname;
-  //int port;
-  //struct sockaddr_in socket;
+
+  for(int index =0; index < argc; index++)
+    printf("argv[%d]:\t%s\n",index, argv[index]);
+
 }
