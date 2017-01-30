@@ -24,6 +24,9 @@ struct snc {
   //const snc();//?
 };
 
+struct multiplexer {
+  int controller; // specifies the UDP/TCP workflow
+};
 
 
 int main(int argc, char* argv[]) {
@@ -31,6 +34,21 @@ int main(int argc, char* argv[]) {
   int opt;
   int num_of_optparams_specified;
   struct snc command;
+  struct multiplexer mux;
+  mux.controller = 0;
+
+
+
+  // retrieve port number (as last argument)
+  command.port = atoi(argv[argc - 1]);
+  // unsigned int or int \\ std::strtoul() or atoi().
+
+  // port is required
+  if (command.port == NULL || command.port < 1024 || command.port > 65535) {
+    printf(ERROR_PARAMS_MESSAGAE);
+    mux.controller = 0; // TERMINATE PROGRAM
+    exit(0);
+  }
 
   while ( (opt = getopt(argc-1, argv, "lus:")) != -1 ) {
     switch (opt) {
@@ -50,37 +68,39 @@ int main(int argc, char* argv[]) {
         break;
       default:
         printf(ERROR_PARAMS_MESSAGAE);
+        mux.controller = 0; // TERMINATE PROGRAM
+        exit(0);
         break;
     }
   }
-  // unsigned int or int
-  //std::strtoul() or atoi().
 
-  // retrieve port number (as last argument)
-  command.port = atoi(argv[argc - 1]);
-
-  // port is required
-  if (command.port == NULL)
-    printf(ERROR_PARAMS_MESSAGAE);
 
   // [hostname] argument is required if the [-l] flag is not given
-  if (command.listen_flag == NULL && command.hostname == NULL )
+  if (command.listen_flag == NULL && command.hostname == NULL ) {
     printf(ERROR_PARAMS_MESSAGAE);
+    mux.controller = 0; // TERMINATE
+    exit(0);
+  }
 
   // [-s source_ip address] grammar is required
   if ((command.source_ip_address_flag != NULL
         && command.source_ip_address == NULL)
       || (command.source_ip_address != NULL
           && command.source_ip_address_flag == NULL)
-      )
+      ) {
     printf(ERROR_PARAMS_MESSAGAE);
+    mux.controller = 0; // TERMINATE PROGRAM
+    exit(0);
+  }
 
 
 
   // it is an error to use [-s source_ip_address] in conjunction with the [-l] option
-  if (command.source_ip_address != NULL && command.listen_flag != NULL)
+  if (command.source_ip_address != NULL && command.listen_flag != NULL) {
     printf(ERROR_PARAMS_MESSAGAE);
-
+    mux.controller = 0; // TERMINATE PROGRAM
+    exit(0);
+  }
 
 
   int index;
