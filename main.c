@@ -5,9 +5,9 @@
 //#include "sys/socket.h" // depedency for
 #include <unistd.h>
 #include <stdlib.h>
-#include <error.h>
-#include "InvalidOrMissingOptionsError.h"
-#include "InternalError.h"
+#include "errors/Error.h"
+#include "errors/InvalidOrMissingOptionsError.h"
+#include "errors/InternalError.h"
 
 struct snc {
   int port; // required (must be last argument)
@@ -19,6 +19,8 @@ struct snc {
   //const execute(); //?
   //const snc();//?
 };
+
+
 
 int main(int argc, char* argv[]) {
   int opt;
