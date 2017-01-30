@@ -1,0 +1,16 @@
+Name: Angel Ortega
+Perm: 5872858
+Class: CS176B
+Assignment: Project1
+
+# Implementation Details
++ Allows for all valid command line parsing
++ Includes all socket creation commands for both the server and client
+
+# Todos
+- Client server model was unable to be implemented but code is compiling.
+- The code holds valid and executable code to send and receive a message
+- The code does not receive input from standard input and it does not output the message to the standard output
+- The code did not use the threading to allow for send/recv blocking requirements
+- (I still had a lot to do with this project since I was barely getting familiar with C)
+

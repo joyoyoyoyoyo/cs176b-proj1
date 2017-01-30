@@ -156,10 +156,10 @@ int main(int argc, char* argv[]) {
 
     listen( socketfd, 1000 );
 
-    // receive response
+    // receive responsea
     recv( socketfd, recv_buffer,sizeof(recv_buffer),DEFAULT_BUFFER_SIZE );
 
-//    // configure default IPv4
+//    // configure default IPv4c
 //    client_addr->sin_family = AF_INET; // use IPv4
 //
 //    // construction destination address for the datagram
