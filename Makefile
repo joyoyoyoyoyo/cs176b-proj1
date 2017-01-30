@@ -1,2 +1,2 @@
-all:
-  gcc main.c -o snc
+all:    main.c
+    g++ -g main.c -o ./snc
