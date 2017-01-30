@@ -6,11 +6,14 @@ Assignment: Project1
 
 Note: Only main.c is used
 
+
 # Implementation Details
 + Allows for all valid command line parsing
 + Includes all socket creation commands for both the server and client
++ Compilation is able to run on CLion (IDE)
 
 # Todos
+- Makefile was producing an error.
 - Client server model was unable to be implemented but code is compiling.
 - The code holds valid and executable code to send and receive a message
 - The code does not receive input from standard input and it does not output the message to the standard output
