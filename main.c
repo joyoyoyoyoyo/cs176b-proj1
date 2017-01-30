@@ -2,7 +2,7 @@
 // Created by angel on 1/24/17.
 //
 #include <netinet/in.h>
-#include "sys/socket.h" // depedency for
+#include "sys/socket.h"
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -12,6 +12,7 @@
 
 #define DEFAULT_BUFFER_SIZE 2024
 #define ERROR_PARAMS_MESSAGAE "invalid or missing options\nusage: snc [-k] [-l] [-u] [-s source_ip_address] [hostname] port\n"
+#define ERROR_INTERNAL_MESSAGE "internal error\n"
 
 struct snc {
   int port; // required (must be last argument)
@@ -27,7 +28,6 @@ struct snc {
 struct multiplexer {
   int controller; // specifies the UDP/TCP workflow
 };
-
 
 int main(int argc, char* argv[]) {
 
@@ -103,31 +103,50 @@ int main(int argc, char* argv[]) {
   }
 
 
+  /**
+   * All commands are valid past this point
+   */
+
+  //TODO: Delete
   int index;
   for(index =0; index < argc; index++)
     printf("argv[%d]:\t%s\n",index, argv[index]);
 
+  // MUX logic for specifying what the behavior should be for the commands
+  //TODO: MUX
 
+  // construct udp client on the valid port to the destination address
   struct sockaddr_in *client_addr;
-  struct hostent *hostinfo;
-  client_addr->sin_family = AF_INET; // use IPv4
-  client_addr->sin_port = htons(command.port);
+  if (command.udp_flag != 0 && command.hostname != 0 && command.port != 0) {
+    mux.controller = 1;
+
+    // configure default IPv4
+    client_addr->sin_family = AF_INET; // use IPv4
+
+    // construction destination address for the datagram
+    // Specifically the port and [hostname]
+    client_addr->sin_port = htons((uint16_t ) command.port); // set port
+    struct hostent *host_information;
+    host_information = gethostbyname(command.hostname);
+    if (host_information == NULL) {
+      printf(ERROR_INTERNAL_MESSAGE);
+      exit (0);
+    }
+    client_addr->sin_addr = *(struct in_addr *) host_information->h_addr;
+
+
+  }
+
+
+
 
 //    client_addr->sin_addr.s_addr = inet_addr(command.hostname);
 
-  /**
-   * This method is to detect the host
-   */
-  hostinfo = gethostbyname(command.hostname);
-  if (hostinfo == NULL) {
-    fprintf (stderr, "Unknown host %s.\n", command.hostname);
-    exit (EXIT_FAILURE);
-  }
-  client_addr->sin_addr = *(struct in_addr *) hostinfo->h_addr;
+
 
   //  inet_aton("63.161.169.137", (client_addr->sin_addr).s_addr);
 
-
+//     exit (EXIT_FAILURE);
 //  client_addr->sin_addr.s_addr = inet_addr(command.hostname);
   //  inet_aton("63.161.169.137", &myaddr.sin_addr.s_addr);
 
