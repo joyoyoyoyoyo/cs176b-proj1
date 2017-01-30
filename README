@@ -4,6 +4,8 @@ Perm: 5872858
 Class: CS176B
 Assignment: Project1
 
+Note: Only main.c is used
+
 # Implementation Details
 + Allows for all valid command line parsing
 + Includes all socket creation commands for both the server and client
