@@ -11,6 +11,7 @@
 #include <string.h>
 
 #define DEFAULT_BUFFER_SIZE 2024
+#define ERROR_PARAMS_MESSAGAE "invalid or missing options\nusage: snc [-k] [-l] [-u] [-s source_ip_address] [hostname] port\n"
 
 struct snc {
   int port; // required (must be last argument)
@@ -48,14 +49,42 @@ int main(int argc, char* argv[]) {
         // check that the syntax follows x.x.x.x
         break;
       default:
+        printf(ERROR_PARAMS_MESSAGAE);
         break;
     }
   }
   // unsigned int or int
   //std::strtoul() or atoi().
+
+  // retrieve port number (as last argument)
   command.port = atoi(argv[argc - 1]);
 
-  for(int index =0; index < argc; index++)
+  // port is required
+  if (command.port == NULL)
+    printf(ERROR_PARAMS_MESSAGAE);
+
+  // [hostname] argument is required if the [-l] flag is not given
+  if (command.listen_flag == NULL && command.hostname == NULL )
+    printf(ERROR_PARAMS_MESSAGAE);
+
+  // [-s source_ip address] grammar is required
+  if ((command.source_ip_address_flag != NULL
+        && command.source_ip_address == NULL)
+      || (command.source_ip_address != NULL
+          && command.source_ip_address_flag == NULL)
+      )
+    printf(ERROR_PARAMS_MESSAGAE);
+
+
+
+  // it is an error to use [-s source_ip_address] in conjunction with the [-l] option
+  if (command.source_ip_address != NULL && command.listen_flag != NULL)
+    printf(ERROR_PARAMS_MESSAGAE);
+
+
+
+  int index;
+  for(index =0; index < argc; index++)
     printf("argv[%d]:\t%s\n",index, argv[index]);
 
 
