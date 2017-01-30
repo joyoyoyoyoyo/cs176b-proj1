@@ -6,8 +6,6 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "errors/InvalidOrMissingOptionsError.h"
-#include "errors/InternalError.h"
 
 struct snc {
   int port; // required (must be last argument)
